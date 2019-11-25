@@ -1,5 +1,5 @@
-setInterval(() => {
-  fetch("http://commiters-vega.herokuapp.com/")
+const generateReport = function(){
+  fetch("https://commiters-vega.herokuapp.com/")
 		.then(res => {
 			return res.json();
 		})
@@ -19,8 +19,10 @@ setInterval(() => {
 			const div = document.createElement("div");
 			div.setAttribute("id", "reports");
 			document.body.append(div);
-			console.log("here");
 			vegaEmbed("#reports", vlSpec);
 		})
 		.catch(e => console.log(e));
-}, 300000)
+}
+
+window.onload = generateReport;
+setInterval(generateReport, 60000);
