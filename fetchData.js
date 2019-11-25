@@ -6,6 +6,7 @@ const generateReport = function(){
 		.then(internDetails => {
 			const vlSpecForFrequency = {
 				$schema: "https://vega.github.io/schema/vega-lite/v4.json",
+				width: 300,
 				data: {
 					values: internDetails,
 				},
