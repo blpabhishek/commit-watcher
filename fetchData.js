@@ -7,7 +7,7 @@ const mapper = function(internDetails) {
 
   return additionDeltions.filter(x => {
     const authoredDate = new Date(x.authoredDate);
-    return authoredDate >= new Date('2019-11-23T05:50:28.267Z');
+    return authoredDate >= new Date('2019-11-22T12:50:28.267Z');
   });
 };
 
