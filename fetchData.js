@@ -20,7 +20,7 @@ const generateReport = function() {
     .then(internDetails => {
       const vlSpecForModification = {
         $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
-        columns: 6,
+        columns: 4,
         data: {
           values: mapper(internDetails)
         },
