@@ -6,7 +6,7 @@ const mapper = function(internDetails) {
   });
 
   return additionDeltions.filter(x => {
-    if (x.add > 10000 || x.del > -10000) return false;
+    if (x.add > 10000 || x.del < -10000) return false;
     const authoredDate = new Date(x.authoredDate);
     return authoredDate >= new Date('2019-11-22T12:50:28.267Z');
   });
