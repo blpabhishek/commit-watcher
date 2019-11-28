@@ -1,11 +1,11 @@
 const mapper = function(internDetails) {
-  const additionDeltions = internDetails.map(x => {
+  const additionDeletions = internDetails.map(x => {
     x['del'] = x.modification == 'deletions' ? x.value * -1 : 0;
     x['add'] = x.modification == 'additions' ? x.value : 0;
     return x;
   });
 
-  return additionDeltions.filter(x => {
+  return additionDeletions.filter(x => {
     if (x.add > 10000 || x.del < -10000) return false;
     const authoredDate = new Date(x.authoredDate);
     return authoredDate >= new Date('2019-11-22T12:50:28.267Z');
@@ -41,7 +41,8 @@ const generateReport = function() {
                   sort: 'null'
                 },
                 y: { field: 'add', type: 'quantitative' },
-                color: { value: 'green' }
+                color: { value: 'green' },
+                href: { field: 'url', type: 'nominal' }
               }
             },
             {
@@ -55,12 +56,20 @@ const generateReport = function() {
                   sort: ['authoredDate']
                 },
                 y: { field: 'del', type: 'quantitative' },
-                color: { value: 'red' }
+                color: { value: 'red' },
+                href: { field: 'url', type: 'nominal' }
               }
             }
           ]
         },
-        resolve: { scale: { x: 'independent', y: 'independent' } }
+        resolve: { scale: { x: 'independent', y: 'independent' } },
+        transform: [
+          {
+            calculate:
+              "'https://github.com/step-batch-7/'+ datum.repoName +'/commit/' + datum.oid",
+            as: 'url'
+          }
+        ]
       };
 
       div = document.createElement('div');
