@@ -1,12 +1,10 @@
 const mapper = function(internDetails) {
   const additionDeletions = internDetails.map(x => {
-    x['del'] = x.modification == 'deletions' ? x.value * -1 : 0;
-    x['add'] = x.modification == 'additions' ? x.value : 0;
+    x.deletions = x.deletions * -1;
     return x;
   });
-
   return additionDeletions.filter(x => {
-    if (x.add > 10000 || x.del < -10000) return false;
+    if (x.additions > 10000 || x.deletions < -10000) return false;
     const authoredDate = new Date(x.authoredDate);
     return authoredDate >= new Date('2019-11-22T12:50:28.267Z');
   });
@@ -20,13 +18,14 @@ const generateReport = function() {
     .then(internDetails => {
       const vlSpecForModification = {
         $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
-        columns: 4,
+        columns: 3,
         data: {
           values: mapper(internDetails)
         },
         facet: {
           field: 'internName',
-          type: 'nominal'
+          type: 'nominal',
+          sort: { op: 'count', field: 'oid', order: 'descending' }
         },
         spec: {
           layer: [
@@ -38,9 +37,9 @@ const generateReport = function() {
                   timeUnit: 'monthsdatehoursminutes',
                   type: 'ordinal',
                   title: 'date',
-                  sort: 'null'
+                  sort: 'descending'
                 },
-                y: { field: 'add', type: 'quantitative' },
+                y: { field: 'additions', type: 'quantitative' },
                 color: { value: 'green' },
                 href: { field: 'url', type: 'nominal' }
               }
@@ -53,9 +52,9 @@ const generateReport = function() {
                   timeUnit: 'monthsdatehoursminutes',
                   type: 'ordinal',
                   title: 'date',
-                  sort: ['authoredDate']
+                  sort: 'descending'
                 },
-                y: { field: 'del', type: 'quantitative' },
+                y: { field: 'deletions', type: 'quantitative' },
                 color: { value: 'red' },
                 href: { field: 'url', type: 'nominal' }
               }
