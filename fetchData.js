@@ -1,10 +1,15 @@
+const params = new URL(document.location).searchParams;
+const columns = +params.get('columns') || 3;
+
+const maxLines = +params.get('maxLines') || 10000;
+
 const mapper = function(internDetails) {
   const additionDeletions = internDetails.map(x => {
     x.deletions = x.deletions * -1;
     return x;
   });
   return additionDeletions.filter(x => {
-    if (x.additions > 10000 || x.deletions < -10000) return false;
+    if (x.additions > maxLines || x.deletions < -maxLines) return false;
     const authoredDate = new Date(x.authoredDate);
     return authoredDate >= new Date('2019-11-22T12:50:28.267Z');
   });
@@ -18,7 +23,7 @@ const generateReport = function() {
     .then(internDetails => {
       const vlSpecForModification = {
         $schema: 'https://vega.github.io/schema/vega-lite/v4.json',
-        columns: 2,
+        columns: columns,
         data: {
           values: mapper(internDetails)
         },
