@@ -3,6 +3,8 @@ const columns = +params.get('columns') || 3;
 
 const maxLines = +params.get('maxLines') || 10000;
 
+const fromDate = params.get('fromDate') || '2019-11-22';
+
 const mapper = function(internDetails) {
   const additionDeletions = internDetails.map(x => {
     x.deletions = x.deletions * -1;
@@ -11,7 +13,7 @@ const mapper = function(internDetails) {
   return additionDeletions.filter(x => {
     if (x.additions > maxLines || x.deletions < -maxLines) return false;
     const authoredDate = new Date(x.authoredDate);
-    return authoredDate >= new Date('2019-11-22T12:50:28.267Z');
+    return authoredDate >= new Date(fromDate);
   });
 };
 
