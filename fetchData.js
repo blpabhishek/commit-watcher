@@ -6,7 +6,7 @@ const maxLines = +params.get('maxLines') || 10000;
 const fromDate = params.get('fromDate') || '2019-11-22';
 const toDate = params.get('toDate') || new Date();
 
-const repoName = +params.get('repo') || '';
+const repoName = params.get('repo') || '';
 
 const dateInRange = function (date, [range0,range1]) {
   return date > range0 && date < range1;
