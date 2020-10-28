@@ -4,8 +4,13 @@ const columns = +params.get('columns') || 3;
 const maxLines = +params.get('maxLines') || 10000;
 
 const fromDate = params.get('fromDate') || '2019-11-22';
+const toDate = params.get('toDate') || new Date();
 
-const mapper = function(internDetails) {
+const dateInRange = function (date, [range0,range1]) {
+  return date > range0 && date < range1;
+}
+
+const mapper = function (internDetails) {
   const additionDeletions = internDetails.map(x => {
     x.deletions = x.deletions * -1;
     return x;
@@ -17,10 +22,39 @@ const mapper = function(internDetails) {
   });
 };
 
-const generateReport = function() {
-  fetch('https://commiters-vega.herokuapp.com/')
+const toCommitDetails = function (commitDetails) {
+  return (internName) => {
+    const internDetail = commitDetails[internName];
+    const branch = internDetail.defaultBranchRef || {target:{history:{edges:[]}}};
+    return branch.target.history.edges.map(x => {
+      const commit = x.node;
+      const { pushedAt, name } = internDetail;
+      commit['internName'] = internName;
+      commit['pushedAt'] = pushedAt;
+      commit['repoName'] = name;
+      return commit;
+    });
+  };
+};
+
+const toArray = function(commitDetails){
+  const interns = Object.keys(commitDetails);
+  const internsWithCommits = interns.filter(intern=>commitDetails[intern]);
+  const commits = [];
+  internsWithCommits.forEach((x)=>{
+    commits.push(...toCommitDetails(commitDetails)(x));
+  });
+  return commits;
+};
+
+const generateReport = function () {
+  fetch('https://commiters.herokuapp.com/')
     .then(res => {
       return res.json();
+    })
+    .then(data =>{
+      console.error(data.errors);
+      return toArray(data.data);
     })
     .then(internDetails => {
       const vlSpecForModification = {
@@ -78,7 +112,7 @@ const generateReport = function() {
         ]
       };
 
-      div = document.createElement('div');
+      const div = document.createElement('div');
       div.setAttribute('id', 'modification');
       document.body.append(div);
       vegaEmbed('#modification', vlSpecForModification);
