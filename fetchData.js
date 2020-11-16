@@ -123,4 +123,3 @@ const generateReport = function () {
 };
 
 window.onload = generateReport;
-setInterval(generateReport, 60000);
