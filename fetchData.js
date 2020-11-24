@@ -123,4 +123,4 @@ const generateReport = function () {
 };
 
 window.onload = generateReport;
-document.title = document.title + repoName; 
+document.title = `${document.title} ${repoName}`;
