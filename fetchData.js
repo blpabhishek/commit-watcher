@@ -50,7 +50,7 @@ const toArray = function(commitDetails){
 };
 
 const generateReport = function () {
-  fetch(`https://commiters.herokuapp.com/${repoName}`)
+  fetch(`https://commitwatcher.herokuapp.com/${repoName}`)
     .then(res => {
       return res.json();
     })
